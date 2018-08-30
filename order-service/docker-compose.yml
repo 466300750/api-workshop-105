@@ -1,0 +1,43 @@
+version: '3'
+services:
+  order-service:
+    container_name: order-service
+    image: order-service:network
+    ports:
+      - 8080:8080
+    networks:
+      - mynetwork
+    depends_on:
+      - user-service
+      - product-service
+      - logistics-service
+    volumes:
+      - "/Users/yuesu/devops/test:/tmp"
+  user-service:
+    container_name: user-service
+    image: user-service:v2
+    ports:
+      - 8081:8081
+    networks:
+      - mynetwork
+  product-service:
+    container_name: product-service
+    image: product-service:v2
+    ports:
+      - 8083:8083
+    networks:
+      - mynetwork
+  logistics-service:
+    container_name: logistics-service
+    image: logistics-service:v1
+    ports:
+      - 8082:8082
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  data:
