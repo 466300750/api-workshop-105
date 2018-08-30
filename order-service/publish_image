@@ -3,6 +3,7 @@
 app_image=suyue466300750/order-service:1
 
 docker run --rm -v /tmp/gradle-cache:/home/gradle/.gradle/caches -v $(pwd):/app -w /app gradle:4.7.0-jdk8 gradle build
-docker build -f order-service/Dockerfile -t ${app_image} ../
+docker build -f order-service/Dockerfile -t ${app_image} order-service
+docker login docker.io -u suyue466300750 -p 200920008bama
 docker push ${app_image}
 docker rmi ${app_image}
