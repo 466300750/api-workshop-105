@@ -1,0 +1,6 @@
+#! /bin/bash
+
+app_image=suyue466300750/order-service:1
+
+docker pull ${app_image}
+docker run --name order-service -p 8080:8080 --network=sales ${app_image}
