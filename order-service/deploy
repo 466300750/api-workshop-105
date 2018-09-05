@@ -2,5 +2,6 @@
 
 app_image=suyue466300750/order-service:${BUILD_NUMBER}
 
+docker rmi $(docker images |grep 'suyue466300750/order-service')
 docker pull ${app_image}
-docker run -d --name order-service -p 8080:8080 --network=sales ${app_image}
+docker run -d --rm --name order-service -p 8080:8080 --network=sales ${app_image}
