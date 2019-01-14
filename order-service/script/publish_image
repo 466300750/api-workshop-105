@@ -7,6 +7,3 @@ docker build -f order-service/Dockerfile -t ${app_image} order-service
 docker login docker.io -u suyue466300750 -p 200920008bama
 docker push ${app_image}
 docker rmi ${app_image}
-
-docker network rm sales
-docker network create sales
