@@ -1,0 +1,11 @@
+---
+- hosts: Server
+  remote_user: su
+  become: yes
+  serial: 1
+  vars:
+    - image: suyue466300750/order-service
+    - tag: ${BUILD_NUMBER}
+    - app_name: order-service
+  roles:
+    - deploy

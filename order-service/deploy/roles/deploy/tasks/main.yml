@@ -1,0 +1,33 @@
+---
+
+- name: "docker images clean up"
+  shell: docker rmi $(docker images -q) || exit 0
+
+- name: pull image
+  command: docker pull "{{image}}:{{tag}}"
+
+- name: kill old container
+  docker_container:
+    name: "{{app_name}}"
+    state: absent
+
+- name: start new service container
+  docker_container:
+    name:  "{{app_name}}"
+    image: "{{image}}:{{tag}}"
+    restart_policy: always
+    network_mode: host
+
+- name: Wait for server to pass health-checks
+  health_check:
+    url: "http://localhost:8080/about"
+  register: result
+
+- name: health check passed, record it
+  template:
+    src: last_success.txt.j2
+    dest: "/tmp/{{app_name}}_last_success.txt"
+  when: result.status == "healthy"
+
+- include: rollback.yml
+  when: result.status == "faulty"
