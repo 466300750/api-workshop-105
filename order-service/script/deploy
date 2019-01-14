@@ -1,6 +1,5 @@
 #! /bin/bash
 set -e
 
-env=${1:-qa}
 export ANSIBLE_HOST_KEY_CHECKING=False
-ansible-playbook -i deploy/inventory.ini ../deploy/deploy.yml
+ansible-playbook -i order-service/deploy/inventory.ini order-service/deploy/deploy.yml
