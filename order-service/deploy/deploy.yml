@@ -1,6 +1,6 @@
 ---
 - hosts: Server
-  remote_user: su
+  connection: local
   become: yes
   serial: 1
   vars:
