@@ -1,13 +1,20 @@
 ---
 
+- name: install docker
+  shell: pip install docker
+
 - name: "docker images clean up"
-  shell: docker images -a | grep "{{image}}" | awk '{print $3}' | xargs docker rmi
+  docker_image:
+    state: absent
+    name: "{{image}}"
+
+- name: kill old container
+  docker_container:
+    name: "{{app_name}}"
+    state: absent
 
 - name: pull image
   command: docker pull "{{image}}:{{tag}}"
-
-- name: kill old container
-  shell: docker ps -a | grep "{{app_name}}" | awk '{print $3}' | xargs docker rmi
 
 - name: start new service container
   docker_container:
