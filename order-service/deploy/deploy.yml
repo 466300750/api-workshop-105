@@ -5,7 +5,7 @@
   serial: 1
   vars:
     - image: suyue466300750/order-service
-    - tag: ${BUILD_NUMBER}
+    - tag: latest
     - app_name: order-service
   roles:
     - deploy
