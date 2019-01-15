@@ -1,15 +1,13 @@
 ---
 
 - name: "docker images clean up"
-  shell: docker rmi $(docker images -q) || exit 0
+  shell: docker images -a | grep "{{image}}" | awk '{print $3}' | xargs docker rmi
 
 - name: pull image
   command: docker pull "{{image}}:{{tag}}"
 
 - name: kill old container
-  docker_container:
-    name: "{{app_name}}"
-    state: absent
+  shell: docker ps -a | grep "{{app_name}}" | awk '{print $3}' | xargs docker rmi
 
 - name: start new service container
   docker_container:
