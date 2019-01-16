@@ -14,9 +14,12 @@
 - name: start new container with historical version
   docker_container:
     name:  "{{app_name}}"
-    image: "{{image}}:{{tag}}"
+    image: "{{image}}:{{last_success_tag}}"
     restart_policy: always
-    network_mode: host
+    network_mode: bridge
+    network_mode: bridge
+    exposed_ports: "3001"
+    published_ports: "3001:8080"
 
 - fail:
     msg: "Deploy to {{tag}} failed, roll back to last success {{last_success_tag}}"
