@@ -21,7 +21,9 @@
     name:  "{{app_name}}"
     image: "{{image}}:{{tag}}"
     restart_policy: always
-    network_mode: host
+    network_mode: bridge
+    exposed_ports: "3001"
+    published_ports: "3001:8080"
 
 - name: Wait for server to pass health-checks
   health_check:
