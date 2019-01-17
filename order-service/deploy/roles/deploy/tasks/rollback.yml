@@ -17,7 +17,6 @@
     image: "{{image}}:{{last_success_tag}}"
     restart_policy: always
     network_mode: bridge
-    network_mode: bridge
     exposed_ports: "3001"
     published_ports: "3001:8080"
 
