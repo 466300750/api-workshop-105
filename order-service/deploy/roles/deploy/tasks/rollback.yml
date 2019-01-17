@@ -17,8 +17,8 @@
     image: "{{image}}:{{last_success_tag}}"
     restart_policy: always
     network_mode: bridge
-    exposed_ports: "3001"
-    published_ports: "3001:8001"
+    exposed_ports: "30001"
+    published_ports: "30001:8001"
 
 - fail:
     msg: "Deploy to {{tag}} failed, roll back to last success {{last_success_tag}}"
