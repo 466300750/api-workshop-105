@@ -27,7 +27,7 @@
 
 - name: Wait for server to pass health-checks
   health_check:
-    url: "http://47.106.201.22:3001/order-service/orders/1234567890"
+    url: "http://localhost:8080/order-service/orders/1234567890"
   register: result
 
 - name: health check passed, record it
