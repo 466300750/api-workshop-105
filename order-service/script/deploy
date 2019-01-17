@@ -2,4 +2,4 @@
 set -e
 
 export ANSIBLE_HOST_KEY_CHECKING=False
-ansible-playbook -i order-service/deploy/inventory.ini -e tag=${BUILD_NUMBER} order-service/deploy/deploy.yml -b -K
+ansible-playbook -i order-service/deploy/inventory.ini -e tag=${BUILD_NUMBER} order-service/deploy/deploy.yml -vvv
