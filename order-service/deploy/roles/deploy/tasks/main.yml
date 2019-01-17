@@ -22,12 +22,12 @@
     image: "{{image}}:{{tag}}"
     restart_policy: always
     network_mode: bridge
-    exposed_ports: "3001"
-    published_ports: "3001:8001"
+    exposed_ports: "30001"
+    published_ports: "30001:8001"
 
 - name: Wait for server to pass health-checks
   health_check:
-    url: "http://localhost:8001/order-service/orders/1234567890"
+    url: "http://localhost:30001/order-service/orders/1234567890"
   register: result
 
 - name: health check passed, record it
