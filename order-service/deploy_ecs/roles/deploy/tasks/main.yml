@@ -4,9 +4,10 @@
   cloudformation:
     stack_name: "ansible-cloudformation"
       state: "present"
-      region: "us-east-1"
+      region: "ap-southeast-1"
       disable_rollback: true
-      template: "roles/deploy/templates/ecs.json"
+      validate_certs: false
+      template: "../templates/ecs.json"
       template_parameters:
         image: "{{image}}"
         tag: "{{tag}}"
