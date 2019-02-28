@@ -1,0 +1,13 @@
+---
+
+- name: create a stack, specify role that cloudformation assumes
+  cloudformation:
+    stack_name: "ansible-cloudformation"
+      state: "present"
+      region: "us-east-1"
+      disable_rollback: true
+      template: "roles/deploy/templates/ecs.json"
+      template_parameters:
+        image: "{{image}}"
+        tag: "{{tag}}"
+

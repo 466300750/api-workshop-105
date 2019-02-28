@@ -1,0 +1,5 @@
+#! /bin/bash
+set -e
+
+export ANSIBLE_HOST_KEY_CHECKING=False
+ansible-playbook -e tag=${BUILD_NUMBER} order-service/deploy_ecs/deploy_ecs.yml -vvv

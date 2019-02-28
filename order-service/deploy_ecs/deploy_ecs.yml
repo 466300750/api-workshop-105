@@ -1,0 +1,10 @@
+---
+- hosts: Server
+  connection: local
+  become: yes
+  serial: 1
+  vars:
+    - image: suyue466300750/order-service
+    - tag: latest
+  roles:
+    - deploy

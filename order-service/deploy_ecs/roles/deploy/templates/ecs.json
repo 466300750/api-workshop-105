@@ -1,0 +1,130 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "VpcCidrBlock": {
+      "Type": "String",
+      "Description": "Optional - CIDR/IP range for the VPC",
+      "Default": "10.0.0.0/24"
+    },
+    "SourceCidr": {
+      "Type": "String",
+      "Description": "Optional - CIDR/IP range for EcsPort and ElbPort - defaults to 0.0.0.0/0",
+      "Default": "0.0.0.0/0"
+    },
+    "VPCId": {
+      "Type": "String",
+      "Description": "VPC Id",
+      "Default": "vpc-02ebc0f539dc4e527"
+    }
+  },
+  "Resources": {
+    "HyCluster": {
+      "Type": "AWS::ECS::Cluster"
+    },
+    "orderServiceECSTask": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "Cpu": "256",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "ExecutionRoleArn": "arn:aws:iam::728092763202:role/ecsTaskExecutionRole",
+        "ContainerDefinitions": [
+        {
+          "Name": "orderservice",
+          "Cpu": "10",
+          "Memory":"500",
+          "PortMappings":[
+          {
+            "ContainerPort": 8080,
+            "HostPort": 8080
+          }
+          ],
+          "Image": "{{image}}:{{tag}}",
+          "Essential": "true"
+        }
+        ]
+      }
+    },
+    "orderServiceECSService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "LaunchType": "FARGATE",
+        "TaskDefinition": {
+          "Ref": "orderServiceECSTask"
+        },
+        "NetworkConfiguration" : {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp" : "ENABLED" ,
+            "SecurityGroups": [{"Ref": "ECSSecurityGroup"}],
+            "Subnets" : [{
+                           "Ref": "Subnet1"
+                         }]
+          }
+        },
+        "DesiredCount": "2",
+        "Cluster": {
+          "Ref": "HyCluster"
+        }
+      }
+    },
+    "myInternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [ {"Key" : "ECS Internet GateWay", "Value" : "hy"}]
+      }
+    },
+    "AttachGateway" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" :  {"Ref": "VPCId"},
+        "InternetGatewayId" : { "Ref" : "myInternetGateway" }
+      }
+    },
+    "myRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPCId" }
+      }
+    },
+    "myRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "myInternetGateway",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "myRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "myInternetGateway" }
+      }
+    },
+    "mySubnetRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "DependsOn" : "myRouteTable",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "Subnet1" },
+        "RouteTableId" : { "Ref" : "myRouteTable" }
+      }
+    },
+    "Subnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId":  {"Ref": "VPCId"},
+        "CidrBlock": {"Ref" : "VpcCidrBlock"}
+      }
+    },
+    "ECSSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Allow http to client host",
+        "VpcId" :  {"Ref": "VPCId"},
+        "SecurityGroupIngress" : [{
+                                    "IpProtocol" : "tcp",
+                                    "FromPort" : "8080",
+                                    "ToPort" : "8080",
+                                    "CidrIp" : {"Ref": "SourceCidr"}
+                                  }]
+      }
+    }
+  }
+}
